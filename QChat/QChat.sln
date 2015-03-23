@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QChat", "QChat.csproj", "{DDB488AE-86FC-4903-8042-573B3A105035}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QChatServer", "..\QChatServer\QChatServer.csproj", "{233AAFDD-54A5-4840-8249-5C58F495FABF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QChatLib", "..\QChatLib\QChatLib.csproj", "{96A52049-C5D9-4983-BA75-9F23E7993D54}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DDB488AE-86FC-4903-8042-573B3A105035}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDB488AE-86FC-4903-8042-573B3A105035}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDB488AE-86FC-4903-8042-573B3A105035}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDB488AE-86FC-4903-8042-573B3A105035}.Release|Any CPU.Build.0 = Release|Any CPU
+		{233AAFDD-54A5-4840-8249-5C58F495FABF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{233AAFDD-54A5-4840-8249-5C58F495FABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{233AAFDD-54A5-4840-8249-5C58F495FABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{233AAFDD-54A5-4840-8249-5C58F495FABF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96A52049-C5D9-4983-BA75-9F23E7993D54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96A52049-C5D9-4983-BA75-9F23E7993D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96A52049-C5D9-4983-BA75-9F23E7993D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96A52049-C5D9-4983-BA75-9F23E7993D54}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
