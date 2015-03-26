@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QChat", "QChat.csproj", "{DDB488AE-86FC-4903-8042-573B3A105035}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QChat", "QChat\QChat.csproj", "{DDB488AE-86FC-4903-8042-573B3A105035}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QChatServer", "..\QChatServer\QChatServer.csproj", "{233AAFDD-54A5-4840-8249-5C58F495FABF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QChatServer", "QChatServer\QChatServer.csproj", "{233AAFDD-54A5-4840-8249-5C58F495FABF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QChatLib", "..\QChatLib\QChatLib.csproj", "{96A52049-C5D9-4983-BA75-9F23E7993D54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QChatLib", "QChatLib\QChatLib.csproj", "{96A52049-C5D9-4983-BA75-9F23E7993D54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

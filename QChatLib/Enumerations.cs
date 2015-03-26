@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QChatServer
+namespace QChatLib
 {
-	public enum Request : byte
+	public enum RequestType : byte
 	{
 		KeepAlive,
+		Close,
 		Login,
 		Logout,
 		GetIP,
@@ -14,5 +15,31 @@ namespace QChatServer
 		SendContact,
 		AcceptContact,
 		RejectContact,
+	}
+
+	public enum ResponseType : byte
+	{
+		Success,
+		Fail,
+		InvalidRequest,
+		AuthenticationError,
+		NotPermitted,
+		IncomingIP,
+		IncomingContacts,
+		Timeout,
+	}
+
+	public enum NotificationType : byte
+	{
+		ContactRequest,
+		ContactRequestAccepted,
+		ContactRequestRejected,
+	}
+
+	public enum ContactState
+	{
+		Sent,
+		Received,
+		Accepted,
 	}
 }
