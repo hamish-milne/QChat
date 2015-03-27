@@ -6,14 +6,19 @@ using System.Net;
 
 namespace QChatLib
 {
-	public abstract class ResponseData
+	public abstract class ServerResponse
 	{
 		string message;
 
 		public abstract ResponseType ResponseType { get; }
 		public abstract string Message { get; }
 
-		public static void SendSingle(StreamWriter stream, ResponseType type, string message)
+		public static void Success(StreamWriter stream)
+		{
+			Send(stream, ResponseType.Success, null);
+		}
+
+		public static void Send(StreamWriter stream, ResponseType type, string message)
 		{
 			if (stream == null)
 				throw new ArgumentNullException("stream");
@@ -21,53 +26,31 @@ namespace QChatLib
 			Util.WriteString(stream, message);
 		}
 
-		public virtual void Send(StreamWriter stream)
-		{
-			SendSingle(stream, ResponseType, Message);
-		}
-
-		public ResponseData(string message)
+		public ServerResponse(string message)
 		{
 			this.message = message;
 		}
 	}
 
-	public class SuccessResponse : ResponseData
-	{
-		public override ResponseType ResponseType
-		{
-			get { return ResponseType.Success; }
-		}
-
-		public SuccessResponse(string message) : base(message)
-		{
-		}
-	}
-
-	public class FailResponse : ResponseData
-	{
-		public override ResponseType ResponseType
-		{
-			get { return ResponseType.Fail; }
-		}
-
-		public FailResponse(string message) : base(message)
-		{
-		}
-	}
-
-	public class SendContacts : ResponseData
+	public class SendContacts : ServerResponse
 	{
 		IList<Contact> contacts;
+
+		public override ResponseType ResponseType
+		{
+			get { return ResponseType.IncomingContacts; }
+		}
 
 		public SendContacts(IList<Contact> contacts) : base(null)
 		{
 			this.contacts = contacts;
 		}
 
-		public override void Send(StreamWriter stream)
+		public static void Send(StreamWriter stream, IList<Contact> contacts)
 		{
-			base.Send(stream);
+			if (stream == null)
+				throw new ArgumentNullException("stream");
+			stream.Write((byte)ResponseType.IncomingContacts);
 			stream.Write(contacts == null ? 0 : (ushort)contacts.Count);
 			if(contacts != null)
 				for(int i = 0; i < contacts.Count; i++)
@@ -84,7 +67,7 @@ namespace QChatLib
 		}
 	}
 
-	public class SendIPs : ResponseData
+	public class SendIPs : ServerResponse
 	{
 		IList<IPAddress> ips;
 
@@ -93,9 +76,16 @@ namespace QChatLib
 			this.ips = ips;
 		}
 
-		public override void Send(StreamWriter stream)
+		public override ResponseType ResponseType
 		{
-			base.Send(stream);
+			get { return ResponseType.IncomingIP; }
+		}
+
+		public static void Send(StreamWriter stream, IList<IPAddress> ips)
+		{
+			if (stream == null)
+				throw new ArgumentNullException("stream");
+			stream.Write((byte)ResponseType.IncomingIP);
 			stream.Write(ips == null ? 0 : (ushort)ips.Count);
 			if(ips != null)
 				for(int i = 0; i < ips.Count; i++)

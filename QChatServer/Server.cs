@@ -13,8 +13,6 @@ namespace QChatServer
 {
     public class Server
     {
-		Dictionary<string, IPAddress> addresses
-			= new Dictionary<string, IPAddress>();
 		X509Certificate serverCertificate;
 		IPAddress ip;
 		int port;
@@ -29,28 +27,6 @@ namespace QChatServer
 				if (writer == null)
 					writer = new StreamWriter(log);
 				writer.Write(message);
-			}
-		}
-
-		public IPAddress GetIP(string username)
-		{
-			if(username == null)
-				throw new ArgumentNullException("username");
-			IPAddress ret = null;
-			lock(addresses)
-			{
-				addresses.TryGetValue(username, out ret);
-			}
-			return ret;
-		}
-
-		public void SetIP(string username, IPAddress ip)
-		{
-			if (username == null)
-				throw new ArgumentNullException("username");
-			lock(addresses)
-			{
-				addresses[username] = ip;
 			}
 		}
 

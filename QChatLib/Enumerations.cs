@@ -11,7 +11,7 @@ namespace QChatLib
 		Login,
 		Logout,
 		GetIP,
-		GetNotification,
+		GetContacts,
 		SendContact,
 		AcceptContact,
 		RejectContact,

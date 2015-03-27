@@ -7,6 +7,14 @@ using QChatLib;
 
 namespace QChatServer
 {
+	public enum DatabaseError
+	{
+		Success,
+		InvalidUsername,
+		InvalidData,
+		EntryAlreadyExists,
+	}
+
 	public class Database
 	{
 		IDbConnection connection;
@@ -43,13 +51,13 @@ namespace QChatServer
 		const string contactTableCreate = "CREATE TABLE " + contactTable + " (" +
 			_sender + " " + stringType + "," +
 			_recipient + " " + stringType + "," +
-			_message + " VARCHAR(500)," +
+			_message + " VARCHAR," +
 			_time + " DATETIME NOT NULL," +
 			"CONSTRAINT u_SenderRecipient UNIQUE (" + _sender + "," + _recipient + ")," +
 			"CONSTRAINT fk_Sender FOREIGN KEY " + _sender +
-				" REFERENCES " + userTable + " (" + _username + ")," +
+				" REFERENCES " + userTable + "(" + _username + ")," +
 			"CONSTRAINT fk_Recipient FOREIGN KEY " + _recipient +
-				" REFERENCES " + userTable + " (" + _username + "))";
+				" REFERENCES " + userTable + "(" + _username + "))";
 
 		const string hasContact = "SELECT COUNT(*) FROM (SELECT * FROM " +
 			contactTable + " WHERE (" + _sender + "=@" + _sender + " AND " +
@@ -63,6 +71,12 @@ namespace QChatServer
 			_sender + "," + _recipient + "," + _message + "," + _time +
 			") VALUES (@" +
 			_sender + ",@" + _recipient + ",@" + _message + ",@" + _time + ")";
+		const string countRequests = "SELECT COUNT(*) FROM (SELECT * FROM " +
+			contactTable + " WHERE " + _sender + "=@" + _username + " AND " +
+			_message + " IS NOT NULL)";
+		const string countContacts = "SELECT COUNT(*) FROM (SELECT * FROM " +
+			contactTable + " WHERE (" + _sender + "@=" + _username + " OR " +
+			_recipient + "@=" + _username + ") AND " + _message + " IS NULL)";
 		
 		
 		public Database(IDbConnection connection)
@@ -196,6 +210,42 @@ namespace QChatServer
 			return ret;
 		}
 
-		
+		public bool UserExists(string username)
+		{
+			return (ScalarQuery(permissionText, username, null) != null);
+		}
+
+		public int CountContacts(string username)
+		{
+			return (int)ScalarQuery(countContacts, username, null);
+		}
+
+		public int CountRequests(string username)
+		{
+			return (int)ScalarQuery(countRequests, username, null);
+		}
+
+		public bool SendContact(string from, string to, string message)
+		{
+			int result;
+			using(var command = connection.CreateCommand())
+			{
+				command.CommandText = sendRequest;
+				var param = command.CreateParameter();
+				param.ParameterName = _sender;
+				param.Value = from;
+				param = command.CreateParameter();
+				param.ParameterName = _recipient;
+				param.Value = to;
+				param = command.CreateParameter();
+				param.ParameterName = _message;
+				param.Value = message;
+				param = command.CreateParameter();
+				param.ParameterName = _time;
+				param.Value = DateTime.UtcNow;
+				result = command.ExecuteNonQuery();
+			}
+			return (result > 0);
+		}
 	}
 }
