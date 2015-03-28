@@ -9,14 +9,14 @@ namespace QChatLib
     {
 		public abstract RequestType RequestType { get; }
 
-		public static void Send(StreamWriter stream, RequestType type)
+		public static void Send(StreamWrapper stream, RequestType type)
 		{
 			if (stream == null)
 				throw new ArgumentNullException("stream");
-			stream.Write((byte)type);
+			stream.WriteByte((byte)type);
 		}
 
-		public static ServerRequest Receive(Stream stream)
+		public static ServerRequest Receive(StreamWrapper stream)
 		{
 			if (stream == null)
 				throw new ArgumentNullException("stream");
@@ -28,11 +28,11 @@ namespace QChatLib
 				case RequestType.GetIP:
 				case RequestType.AcceptContact:
 				case RequestType.RejectContact:
-					return new SingleUsernameRequest(type, ReadString(stream));
+					return new SingleUsernameRequest(type, stream.ReadString(1));
 				case RequestType.Login:
-					return new LoginRequest(ReadString(stream), ReadString(stream));
+					return new LoginRequest(stream.ReadString(1), stream.ReadString(1));
 				case RequestType.SendContact:
-					return new ContactRequest(ReadString(stream), )
+					return new ContactRequest(stream.ReadString(1), stream.ReadString(2))
 			}
 		}
     }
@@ -61,10 +61,10 @@ namespace QChatLib
 			get { return message; }
 		}
 
-		public static void Send(StreamWriter stream, string username, string message)
+		public static void Send(StreamWrapper stream, string username, string message)
 		{
 			Send(stream, RequestType.SendContact, username);
-			Util.WriteString(stream, message);
+			stream.WriteString(message, 2);
 		}
 
 		public ContactRequest(string username, string message)
@@ -83,10 +83,10 @@ namespace QChatLib
 			get { return username; }
 		}
 
-		public static void Send(StreamWriter stream, RequestType type, string username)
+		public static void Send(StreamWrapper stream, RequestType type, string username)
 		{
 			Send(stream, type);
-			Util.WriteShortString(stream, username);
+			stream.WriteString(username, 1);
 		}
 
 		public UsernameRequest(string username)
@@ -125,10 +125,10 @@ namespace QChatLib
 			get { return password; }
 		}
 
-		public static void Send(StreamWriter stream, string username, string password)
+		public static void Send(StreamWrapper stream, string username, string password)
 		{
 			Send(stream, RequestType.Login, username);
-			Util.WriteShortString(stream, password);
+			stream.WriteString(password, 1);
 		}
 
 		public LoginRequest(string username, string password)

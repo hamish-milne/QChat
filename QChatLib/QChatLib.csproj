@@ -36,14 +36,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientListener.cs" />
     <Compile Include="Contact.cs" />
+    <Compile Include="StreamWrapper.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="P2PSocket.cs" />
     <Compile Include="ServerRequest.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerResponse.cs" />
-    <Compile Include="Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

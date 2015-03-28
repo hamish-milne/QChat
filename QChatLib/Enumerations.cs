@@ -11,6 +11,8 @@ namespace QChatLib
 		Login,
 		Logout,
 		GetIP,
+		GetPublicKey,
+		GetPrivateKey,
 		GetContacts,
 		SendContact,
 		AcceptContact,
@@ -41,5 +43,21 @@ namespace QChatLib
 		Sent,
 		Received,
 		Accepted,
+	}
+
+	public enum MessageType : byte
+	{
+		Acknowledge,
+		RequestPublicKey,
+		MessageSend,
+		MessageRequest,
+		FileSend,
+		FileAccept,
+		FileData,
+		VoiceRequest,
+		VoiceAccept,
+		VoiceReject,
+		VoiceEnd,
+		VoiceData,
 	}
 }
