@@ -5,7 +5,7 @@ using System.Net;
 
 namespace QChatServer
 {
-	public class IPManager
+	public class IpManager
 	{
 		Dictionary<string, List<IPAddress>> dict;
 		IPAddress[] empty = new IPAddress[0];

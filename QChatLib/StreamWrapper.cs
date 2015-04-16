@@ -7,7 +7,7 @@ namespace QChatLib
 {
 	public class StreamWrapper
 	{
-		byte[] buffer = new byte[0xFFFF];
+		byte[] buffer = new byte[0x10000];
 		Stream stream;
 
 		public static Encoding Encoding
@@ -60,7 +60,7 @@ namespace QChatLib
 			return Encoding.GetString(buffer, 0, len);
 		}
 
-		public void WriteByte(byte b)
+		public void Write(byte b)
 		{
 			stream.WriteByte(b);
 		}
@@ -71,6 +71,56 @@ namespace QChatLib
 			if (b < 0)
 				throw new IOException("End of stream");
 			return (byte)b;
+		}
+
+		public int Read(byte[] buffer, int offset, int count)
+		{
+			return stream.Read(buffer, offset, count);
+		}
+
+		public void Write(byte[] buffer, int offset, int count)
+		{
+			stream.Write(buffer, offset, count);
+		}
+
+		public void Write(ushort s)
+		{
+			stream.WriteByte((byte)(s >> 8));
+			stream.WriteByte((byte)s);
+		}
+
+		public ushort ReadUShort()
+		{
+			ushort ret = (ushort)stream.ReadByte();
+			ret <<= 8;
+			return (ushort)(ret + stream.ReadByte());
+		}
+
+		public void Write(long l)
+		{
+			for (int i = sizeof(long) - 1; i >= 0; i--)
+				stream.WriteByte((byte)(l >> (8 * i)));
+		}
+
+		public void Write(ulong l)
+		{
+			Write((long)l);
+		}
+
+		public long ReadLong()
+		{
+			long ret = 0;
+			for(int i = 0; i < sizeof(long); i++)
+			{
+				ret <<= 8;
+				ret += stream.ReadByte();
+			}
+			return ret;
+		}
+
+		public ulong ReadULong()
+		{
+			return (ulong)ReadLong();
 		}
 
 		public void Flush()

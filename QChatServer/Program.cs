@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Security.Cryptography.X509Certificates;
+using QChatLib;
 
 namespace QChatServer
 {
@@ -8,12 +10,16 @@ namespace QChatServer
 	{
 		static void Main(string[] args)
 		{
-			var bytes = new byte[0x100];
-			Console.WriteLine(Convert.ToBase64String(bytes).Length);
-			for (int i = 0; i < bytes.Length; i++)
-				bytes[i] = (byte)i;
-			Console.WriteLine(Convert.ToBase64String(bytes).Length);
-			Console.Read();
+			InitializeAttribute.Init();
+			ServerSettings s;
+			s.Db = new MemoryDb();
+			s.Db.AddUser("user", "password");
+			s.HolePunchServer = new HolePunchServer(2000);
+			s.IpManager = new IpManager();
+			s.Permissions = new AllPermissions();
+			s.Log = new ConsoleLog();
+			var server = new Server(s, new X509Certificate2("server.pfx", "password"), 1000, System.Net.IPAddress.IPv6Any, 81);
+			server.Run();
 		}
 	}
 }

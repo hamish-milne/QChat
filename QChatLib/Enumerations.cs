@@ -4,9 +4,24 @@ using System.Text;
 
 namespace QChatLib
 {
-	public enum RequestType : byte
+	public enum ServerResponse : byte
 	{
-		KeepAlive,
+		Success,
+		Fail,
+		InvalidRequest,
+		AuthenticationError,
+		NotPermitted,
+		IncomingIP,
+		IncomingContacts,
+		IncomingKey,
+		LoginSuccess,
+		Timeout,
+	}
+
+	public enum ServerRequest : byte
+	{
+		RequestMode,
+		NotifyMode,
 		Close,
 		Login,
 		Logout,
@@ -17,18 +32,12 @@ namespace QChatLib
 		SendContact,
 		AcceptContact,
 		RejectContact,
-	}
-
-	public enum ResponseType : byte
-	{
-		Success,
-		Fail,
-		InvalidRequest,
-		AuthenticationError,
-		NotPermitted,
-		IncomingIP,
-		IncomingContacts,
-		Timeout,
+		Relay,
+		GroupCreate,
+		GroupDelete,
+		GroupAdd,
+		GroupRemove,
+		GroupRole,
 	}
 
 	public enum NotificationType : byte
@@ -36,6 +45,12 @@ namespace QChatLib
 		ContactRequest,
 		ContactRequestAccepted,
 		ContactRequestRejected,
+		GroupCreate,
+		GroupDelete,
+		GroupAdd,
+		GroupRemove,
+		GroupRole,
+		Relay,
 	}
 
 	public enum ContactState
@@ -48,7 +63,6 @@ namespace QChatLib
 	public enum MessageType : byte
 	{
 		Acknowledge,
-		RequestPublicKey,
 		MessageSend,
 		MessageRequest,
 		FileSend,

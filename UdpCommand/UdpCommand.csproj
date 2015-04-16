@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{96A52049-C5D9-4983-BA75-9F23E7993D54}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{8FC595D3-7129-4027-8589-E6F5E7448E3D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QChatLib</RootNamespace>
-    <AssemblyName>QChatLib</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>UdpCommand</RootNamespace>
+    <AssemblyName>UdpCommand</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,9 +21,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -37,24 +37,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientAddress.cs" />
-    <Compile Include="ClientListener.cs" />
-    <Compile Include="ClientMessage.cs" />
-    <Compile Include="Contact.cs" />
-    <Compile Include="DatagramWrapper.cs" />
-    <Compile Include="EncryptionWrapper.cs" />
-    <Compile Include="InitializeAttribute.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="ReflectionPooling.cs" />
-    <Compile Include="StreamWrapper.cs" />
-    <Compile Include="Notification.cs" />
-    <Compile Include="P2PSocket.cs" />
-    <Compile Include="ServerRequest.cs" />
-    <Compile Include="Enumerations.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerResponse.cs" />
-    <Compile Include="Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

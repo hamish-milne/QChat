@@ -11,17 +11,11 @@ namespace QChatLib
 		public DateTime RequestSent;
 		public string Message;
 
-		public Contact(string name, ContactState state, DateTime requestSent)
+		public Contact(ContactState state, string name, DateTime requestSent, string message)
 		{
 			Name = name;
 			State = state;
 			RequestSent = requestSent;
-			Message = null;
-		}
-
-		public Contact(string name, ContactState state, DateTime requestSent, string message)
-			: this(name, state, requestSent)
-		{
 			Message = message;
 		}
 	}

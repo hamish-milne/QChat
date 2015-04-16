@@ -3,78 +3,93 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace QChatLib
+namespace QChatLib.ServerRequests
 {
-    public abstract class ServerRequest
-    {
-		public abstract RequestType RequestType { get; }
-
-		public static void Send(StreamWrapper stream, RequestType type)
-		{
-			if (stream == null)
-				throw new ArgumentNullException("stream");
-			stream.WriteByte((byte)type);
-		}
-
-		public static ServerRequest Receive(StreamWrapper stream)
-		{
-			if (stream == null)
-				throw new ArgumentNullException("stream");
-			var type = (RequestType)stream.ReadByte();
-			switch (type)
-			{
-				default:
-					return new SingleRequest(type);
-				case RequestType.GetIP:
-				case RequestType.AcceptContact:
-				case RequestType.RejectContact:
-					return new SingleUsernameRequest(type, stream.ReadString(1));
-				case RequestType.Login:
-					return new LoginRequest(stream.ReadString(1), stream.ReadString(1));
-				case RequestType.SendContact:
-					return new ContactRequest(stream.ReadString(1), stream.ReadString(2))
-			}
-		}
-    }
-
-	public class SingleRequest : ServerRequest
+	public class RequestMode : Message<ServerRequest>
 	{
-		RequestType requestType;
+		public const ServerRequest Code = ServerRequest.RequestMode;
 
-		public override RequestType RequestType
+		public override ServerRequest Type
 		{
-			get { return requestType; }
+			get { return Code; }
 		}
 
-		public SingleRequest(RequestType requestType)
+		public static void Send(StreamWrapper stream)
 		{
-			this.requestType = requestType;
+			Send(stream, (byte)Code);
+		}
+
+		[Initialize]
+		static void Init()
+		{
+			AssignReader((byte)Code, (stream) => new RequestMode());
 		}
 	}
 
-	public class ContactRequest : UsernameRequest
+	public class NotifyMode : Message<ServerRequest>
 	{
-		string message;
+		public const ServerRequest Code = ServerRequest.NotifyMode;
 
-		public string Message
+		public override ServerRequest Type
 		{
-			get { return message; }
+			get { return Code; }
 		}
 
-		public static void Send(StreamWrapper stream, string username, string message)
+		public static void Send(StreamWrapper stream)
 		{
-			Send(stream, RequestType.SendContact, username);
-			stream.WriteString(message, 2);
+			Send(stream, (byte)Code);
 		}
 
-		public ContactRequest(string username, string message)
-			: base(username)
+		[Initialize]
+		static void Init()
 		{
-			this.message = message;
+			AssignReader((byte)Code, (stream) => new NotifyMode());
 		}
 	}
 
-	public abstract class UsernameRequest : ServerRequest
+	public class Close : Message<ServerRequest>
+	{
+		public const ServerRequest Code = ServerRequest.Close;
+
+		public override ServerRequest Type
+		{
+			get { return Code; }
+		}
+
+		public static void Send(StreamWrapper stream)
+		{
+			Send(stream, (byte)Code);
+		}
+
+		[Initialize]
+		static void Init()
+		{
+			AssignReader((byte)Code, (stream) => new Close());
+		}
+	}
+
+	public class Logout : Message<ServerRequest>
+	{
+		public const ServerRequest Code = ServerRequest.Logout;
+
+		public override ServerRequest Type
+		{
+			get { return Code; }
+		}
+
+		public static void Send(StreamWrapper stream)
+		{
+			Send(stream, (byte)Code);
+		}
+
+		[Initialize]
+		static void Init()
+		{
+			AssignReader((byte)Code, (stream) => new Logout());
+		}
+	}
+
+	public abstract class UsernameRequest : Message<ServerRequest>
 	{
 		string username;
 
@@ -83,9 +98,9 @@ namespace QChatLib
 			get { return username; }
 		}
 
-		public static void Send(StreamWrapper stream, RequestType type, string username)
+		protected static void Send(StreamWrapper stream, ServerRequest type, string username)
 		{
-			Send(stream, type);
+			stream.Write((byte)type);
 			stream.WriteString(username, 1);
 		}
 
@@ -95,29 +110,103 @@ namespace QChatLib
 		}
 	}
 
-	public class SingleUsernameRequest : UsernameRequest
+	public class ContactRequest : UsernameRequest
 	{
-		RequestType requestType;
+		public const ServerRequest Code = ServerRequest.SendContact;
 
-		public override RequestType RequestType
+		string message;
+
+		public string Message
 		{
-			get { return requestType; }
+			get { return message; }
 		}
 
-		public SingleUsernameRequest(RequestType requestType, string username)
+		public override ServerRequest Type
+		{
+			get { return Code; }
+		}
+
+		public static void Send(StreamWrapper stream, string username, string message)
+		{
+			Send(stream, Code, username);
+			stream.WriteString(message, 2);
+		}
+
+		public ContactRequest(string username, string message)
 			: base(username)
 		{
-			this.requestType = requestType;
+			this.message = message;
+		}
+
+		[Initialize]
+		static void Init()
+		{
+			AssignReader((byte)ServerRequest.SendContact, (stream) =>
+				new ContactRequest(stream.ReadString(1), stream.ReadString(2)));
 		}
 	}
 
-	public class LoginRequest : UsernameRequest
+	public class GetIP : UsernameRequest
 	{
+		public const ServerRequest Code = ServerRequest.GetIP;
+
+		public override ServerRequest Type
+		{
+			get { return Code; }
+		}
+
+		public static void Send(StreamWrapper stream, string username)
+		{
+			Send(stream, Code, username);
+		}
+
+		public GetIP(string username)
+			: base(username)
+		{
+		}
+
+		[Initialize]
+		static void Init()
+		{
+			AssignReader((byte)Code, (stream) => new GetIP(stream.ReadString(1)));
+		}
+	}
+
+	public class GetPublicKey : UsernameRequest
+	{
+		public const ServerRequest Code = ServerRequest.GetPublicKey;
+
+		public override ServerRequest Type
+		{
+			get { return Code; }
+		}
+
+		public static void Send(StreamWrapper stream, string username)
+		{
+			Send(stream, Code, username);
+		}
+
+		public GetPublicKey(string username)
+			: base(username)
+		{
+		}
+
+		[Initialize]
+		static void Init()
+		{
+			AssignReader((byte)Code, (stream) => new GetPublicKey(stream.ReadString(1)));
+		}
+	}
+
+	public class Login : UsernameRequest
+	{
+		public const ServerRequest Code = ServerRequest.Login;
+
 		string password;
 
-		public override RequestType RequestType
+		public override ServerRequest Type
 		{
-			get { return RequestType.Login; }
+			get { return Code; }
 		}
 
 		public string Password
@@ -127,14 +216,21 @@ namespace QChatLib
 
 		public static void Send(StreamWrapper stream, string username, string password)
 		{
-			Send(stream, RequestType.Login, username);
+			Send(stream, Code, username);
 			stream.WriteString(password, 1);
 		}
 
-		public LoginRequest(string username, string password)
+		public Login(string username, string password)
 			: base(username)
 		{
 			this.password = password;
+		}
+
+		[Initialize]
+		static void Init()
+		{
+			AssignReader((byte)Code, (stream) =>
+				new Login(stream.ReadString(1), stream.ReadString(1)));
 		}
 	}
 }
