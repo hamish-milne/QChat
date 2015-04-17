@@ -7,7 +7,7 @@ using QChatLib;
 
 namespace QChatServer
 {
-	class DERParser
+	public class DERParser
 	{
 		public enum ClassType
 		{
@@ -17,26 +17,30 @@ namespace QChatServer
 			Private = 3,
 		}
 
-		public struct Record
+		public class Record
 		{
 			public ulong ID;
 			public ClassType ClassType;
 			public bool Constructed;
-			public byte[] Data;
+			public object Data;
 		}
 
-		static int ReadByte(Stream stream)
+		ulong streamLength = ulong.MaxValue;
+
+		int ReadByte(Stream stream)
 		{
-			var Byte = stream.ReadByte();
+			int Byte = -1;
+			if(streamLength != ulong.MaxValue)
+				Byte = stream.ReadByte();
 			if (Byte < 0)
 				throw new IOException("End of stream");
 			return Byte;
 		}
 
-		public Record ParseIdentifier(Stream stream)
+		Record ParseIdentifier(Stream stream)
 		{
 			var Byte = ReadByte(stream);
-			var ret = default(Record);
+			var ret = new Record();
 			ret.ClassType = (ClassType)(Byte >> 6);
 			ret.Constructed = ((Byte >> 5) & 1) != 0;
 			ret.ID = (ulong)(Byte & 0x1F);
@@ -56,7 +60,7 @@ namespace QChatServer
 			return ret;
 		}
 
-		public bool ParseLength(Stream stream, out ulong ret)
+		bool ParseLength(Stream stream, out ulong ret)
 		{
 			var Byte = ReadByte(stream);
 			if ((Byte & 0x80) == 0)
@@ -70,12 +74,33 @@ namespace QChatServer
 				return false;
 			if (length > sizeof(ulong))
 				throw new IOException("Length is too large");
-			while(length-- > 0)
+			while (length-- > 0)
 				ret = (ret << 8) + (ulong)ReadByte(stream);
+			if (ret == ulong.MaxValue)
+				throw new IOException("Length is too large");
 			return true;
 		}
 
+		public Record ParseObject(Stream stream)
+		{
+			var record = ParseIdentifier(stream);
+			ulong length;
+			if(ParseLength(stream, out length))
+			{
+				if(record.Constructed)
+				{
+					var storedLength = streamLength;
+					streamLength = length;
+					var recordList = new List<Record>();
+					while (streamLength > 0)
+						recordList.Add(ParseObject(stream));
+				} else
+				{
 
+				}
+			}
+
+		}
 
 
 		void ParseConstructed(Stream stream, bool endOnZero)
